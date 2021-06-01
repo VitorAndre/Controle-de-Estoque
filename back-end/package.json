@@ -1,5 +1,5 @@
 {
-  "name": "base-backend",
+  "name": "back-frexco",
   "version": "1.0.0",
   "description": "Projeto de base para backend em NodeJs, Express e MongoDB para a CompJunior",
   "main": "./src/index.js",
