@@ -88,6 +88,24 @@ ProdutoRouter.put('/:id', [Multer.single('image'), resizeImage], (req, res) => {
     });
 });
 
+ProdutoRouter.put('/estoque/:id', (req, res) => {
+  const id = req.params.id;
+  const { estoque } = req.body;
+  if (!id) return res.status(400).send({ erro: 'ID é obrigatório' });
+  if (!isValidObjectId(id))
+    return res.status(400).send({ erro: 'ID inválido' });
+
+  ProdutoSchema.findByIdAndUpdate(id, { estoque }, { new: true })
+    .then((resultado) => {
+      if (resultado) return res.send(resultado);
+      else return res.status(404).send({ erro: 'Objeto não encontrado' });
+    })
+    .catch((err) => {
+      console.error(err, 'Erro ao editar o objeto');
+      return res.status(500).send({ erro: 'Erro interno do servidor' });
+    });
+});
+
 ProdutoRouter.delete('/:id', (req, res) => {
   const id = req.params.id;
 
