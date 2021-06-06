@@ -1,0 +1,21 @@
+.header {
+  text-align: center;
+  padding: 2rem;
+  height: 8rem;
+  background-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0));
+
+  a {
+    text-decoration: none;
+    padding: 1rem;
+    border-radius: 7.5px;
+    margin: 0 1rem;
+    background-color: rgba(0, 0, 0, 0.875);
+    color: #fff;
+    border: 1px solid #fff;
+
+    &:hover {
+      background-color: #fff;
+      color: rgba(0, 0, 0, 0.875);
+    }
+  }
+}

@@ -1,8 +1,11 @@
 import styles from "./header.module.scss";
 
-import { useRouter } from "next/router";
-import Link from "next/link";
-
 export function Navbar() {
-  return <div className={styles.header}>aaaaaaaaaaaa</div>;
+  return (
+    <div className={styles.header}>
+      <a href="/">Início</a>
+      <a href="/dashProdutos">Dashboard</a>
+      <a href="/dashProdutos/addProduto">Adicionar Produto</a>
+    </div>
+  );
 }
