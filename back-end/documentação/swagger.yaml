@@ -140,6 +140,46 @@ paths:
           description: '{ erro: "Objeto não encontrado" }'
         '500':
           description: '{ erro: "Erro interno do servidor" }'
+  /estoque/{id}:
+    put:
+      tags:
+        - 'Estoque'
+      summary: 'Edita estoque'
+      description: 'Atualiza estoque do sistema'
+      operationId: 'editEstoque'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'path'
+          name: id
+          required: true
+          type: 'string'
+          description: 'Id do produto que terá o estoque alterado'
+        - in: 'body'
+          name: 'body'
+          description: 'Novo valor de estoque'
+          required: true
+          schema:
+            type: 'object'
+            properties:
+              estoque:
+                type: 'number'
+                example: 100
+      responses:
+        '200':
+          description: 'Deu tudo certo'
+          schema:
+            type: 'object'
+            $ref: '#/definitions/ProdutoResponse'
+        '400':
+          description: 'Erros variados, mas com o padrão: <br/>{ erro: "Nenhuma imagem foi enviada" }'
+        '404':
+          description: '{ erro: "Objeto não encontrado" }'
+        '500':
+          description: 'Internal server error'
+
 definitions:
   Produto:
     type: 'object'
