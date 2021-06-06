@@ -11,7 +11,7 @@
 
 - `git clone https://github.com/VitorAndre/Controle-de-Estoque.git`
 - `cd Controle-de-Estoque`
-- `cd ../front-end`
+- `cd front-end`
 - `npm install`
 - `cd ../back-end`
 - `npm install`
