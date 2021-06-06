@@ -2,26 +2,23 @@ swagger: '2.0'
 info:
   description: "Documentação da API do projeto. Para editar esse arquivo é recomendado utilizar a extensão do VSCode 'Swagger Viewer'"
   version: '1.0.0'
-  title: 'Projeto'
-host: 'https://exemplo.compjunior.com.br/'
-basePath: '/api'
+  title: 'Controle de Estoque'
+host: 'localhost:3333'
 tags:
-  - name: 'exemplo'
-    description: 'Operações relacionadas ao exemplo'
-  - name: 'usuario'
-    description: 'Operações relacionadas aos usuários'
+  - name: 'Produtos'
+    description: 'Operações relacionadas aos produtos'
+  - name: 'Estoque'
+    description: 'Operações relacionadas ao estoque'
 schemes:
   - 'https'
 paths:
-  /exemplo:
+  /:
     get:
       tags:
-        - 'exemplo'
-      summary: 'RESUMO EXEMPLO GET'
-      description: 'DESCRIÇÃO EXEMPLO GET'
-      operationId: 'login'
-      consumes:
-        - 'application/json'
+        - 'Produtos'
+      summary: 'Obtém todos os produtos do sistema'
+      description: ''
+      operationId: 'getProdutos'
       produces:
         - 'application/json'
       responses:
@@ -31,291 +28,152 @@ paths:
             type: 'array'
             items:
               type: 'object'
-              properties:
-                dado:
-                  type: 'string'
-                  example: 'exemplo'
-                dado2:
-                  type: 'string'
-                  example: 'exemplo2'
-        '400':
-          description: 'Bad request'
+              $ref: '#/definitions/ProdutoResponse'
         '500':
           description: 'Internal server error'
     post:
       tags:
-        - 'exemplo'
-      summary: 'RESUMO EXEMPLO POST'
-      description: 'DESCRIÇÃO EXEMPLO POST'
-      operationId: 'signUp'
+        - 'Produtos'
+      summary: 'Adiciona produto'
+      description: 'Adiciona um novo produto ao sistema'
+      operationId: 'addProduto'
       consumes:
-        - 'application/json'
+        - 'formData'
       produces:
         - 'application/json'
       parameters:
         - in: 'body'
           name: 'body'
-          description: 'Dados de cadastro do usuário'
+          description: 'Dados do produto. Imagem é um arquivo'
           required: true
           schema:
             type: 'object'
-            properties:
-              dado:
-                type: 'string'
-                example: 'exemplo'
-              dado2:
-                type: 'string'
-                example: 'exemplo2'
+            $ref: '#/definitions/Produto'
       responses:
         '200':
           description: 'Deu tudo certo'
+          schema:
+            type: 'object'
+            $ref: '#/definitions/ProdutoResponse'
         '400':
-          description: 'Bad request'
+          description: 'Erros variados, mas com o padrão: <br/>{ erro: "Nenhuma imagem foi enviada" }'
         '500':
           description: 'Internal server error'
-
-  /usuario:
+  /{id}:
     get:
       tags:
-        - 'usuario'
-      summary: 'Obtém todos os usuários do sistema'
+        - 'Produtos'
+      summary: 'Obtém um produto específico do sistema'
       description: ''
-      consumes:
-        - 'application/json'
+      operationId: 'getProduto'
+      parameters:
+        - in: 'path'
+          name: id
+          required: true
+          type: 'string'
       produces:
         - 'application/json'
       responses:
         '200':
-          description: 'OK'
+          description: 'Deu tudo certo'
           schema:
-            type: 'array'
-            items:
-              $ref: '#/definitions/User'
-        '401':
-          description: 'No valid token provided / User not allowed to access this resource'
+            type: 'object'
+            $ref: '#/definitions/ProdutoResponse'
         '500':
           description: 'Internal server error'
-      security:
-        - petstore_auth:
-            - 'write:palestrantes'
-  /usuario/inscrever:
-    post:
+    put:
       tags:
-        - 'usuario'
-      summary: 'Inscreve o usuário em uma palestra'
-      description: ''
+        - 'Produtos'
+      summary: 'Edita produto'
+      description: 'Edita um produto do sistema'
+      operationId: 'editProduto'
       consumes:
-        - 'application/json'
+        - 'formData'
       produces:
         - 'application/json'
       parameters:
+        - in: 'path'
+          name: id
+          required: true
+          type: 'string'
         - in: 'body'
           name: 'body'
-          description: 'Dados da palestra e do usuário'
+          description: 'Dados do produto. Imagem é um arquivo'
           required: true
           schema:
             type: 'object'
-            properties:
-              idPalestra:
-                type: 'string'
-              idUsuario:
-                type: 'string'
-                example: 'Opcional se mandar o token na requisição'
+            $ref: '#/definitions/Produto'
       responses:
         '200':
-          description: 'OK'
+          description: 'Deu tudo certo'
+          schema:
+            type: 'object'
+            $ref: '#/definitions/ProdutoResponse'
         '400':
-          description: 'Usuário já isncrito na palestra'
-        '401':
-          description: 'No valid token provided / User not allowed to access this resource'
+          description: 'Erros variados, mas com o padrão: <br/>{ erro: "Nenhuma imagem foi enviada" }'
+        '404':
+          description: '{ erro: "Objeto não encontrado" }'
         '500':
           description: 'Internal server error'
-      security:
-        - petstore_auth:
-            - 'write:palestrantes'
-  /usuario/inscricao:
     delete:
       tags:
-        - 'usuario'
-      summary: 'Deleta inscrição do usuário'
+        - 'Produtos'
+      summary: 'Deleta a instância de um produto'
       description: ''
-      consumes:
-        - 'application/json'
+      operationId: 'deleteProduto'
       produces:
         - 'application/json'
       parameters:
-        - in: 'body'
-          name: 'body'
-          description: 'Dados da palestra e do usuário'
+        - in: 'path'
+          name: id
           required: true
-          schema:
-            type: 'object'
-            properties:
-              idInscricao:
-                type: 'string'
-      responses:
-        '200':
-          description: 'OK'
-        '400':
-          description: 'Id da inscrição não fornecido'
-        '403':
-          description: 'No valid token provided / User not allowed to access this resource'
-        '500':
-          description: 'Internal server error'
-      security:
-        - petstore_auth:
-            - 'write:palestrantes'
-  /usuario/palestras-inscritas:
-    get:
-      tags:
-        - 'usuario'
-      summary: 'Obtém as palestras nas quais o usuário se inscreveu'
-      description: ''
-      consumes:
-        - 'application/json'
-      produces:
-        - 'application/json'
-      parameters:
-        - in: 'body'
-          name: 'body'
-          description: 'Dados da palestra e do usuário'
-          required: true
-          schema:
-            type: 'object'
-            properties:
-              idUsuario:
-                type: 'string'
-                example: 'Opcional se mandar o token na requisição'
-              dia:
-                type: 'string'
-                example: '19'
-      responses:
-        '200':
-          description: 'OK'
-          schema:
-            type: 'object'
-            properties:
-              palestra:
-                type: 'string'
-                example: 'Dados da palestra'
-              streamingTime:
-                type: 'string'
-                example: 'Tempo que o usuário assistiu a palestra'
-              gerarCertificado:
-                type: 'string'
-                example: 'Se o usuário pode ou não gerar certificado'
-        '401':
-          description: 'No valid token provided / User not allowed to access this resource'
-        '500':
-          description: 'Internal server error'
-      security:
-        - petstore_auth:
-            - 'write:palestrantes'
-  /usuario/streaming:
-    post:
-      tags:
-        - 'usuario'
-      summary: 'Registra o tempo que o usuário ficou na palestra'
-      description: ''
-      consumes:
-        - 'application/json'
-      produces:
-        - 'application/json'
-      parameters:
-        - in: 'body'
-          name: 'body'
-          description: 'Dados da palestra e do usuário'
-          required: true
-          schema:
-            type: 'object'
-            properties:
-              idPalestra:
-                type: 'string'
-              time:
-                type: 'string'
-                example: 'Tempo em segundos que o usuário assistiu a palestra (função será chamada de x em x segundos, aí manda esse x)'
-      responses:
-        '200':
-          description: 'OK'
-        '400':
-          description: 'Time ou idPalestra não enviados/Tempo de registro muito curto/ Horário fora de exibição'
-        '401':
-          description: 'No valid token provided / User not allowed to access this resource'
-        '404':
-          description: 'Inscrição não encontrada'
-        '500':
-          description: 'Internal server error'
-      security:
-        - petstore_auth:
-            - 'write:palestrantes'
-  /usuario/gerar-certificado:
-    get:
-      tags:
-        - 'usuario'
-      summary: 'Gera um certificado com o tempo que o usuario ficou em uma palestra'
-      description: ''
-      consumes:
-        - 'application/json'
-      produces:
-        - 'application/json'
-      parameters:
-        - in: 'query'
-          name: 'token'
           type: 'string'
-          description: 'Token do usuário'
       responses:
         '200':
-          description: 'OK'
-        '401':
-          description: 'Tempo mínimo de visualização não atingido'
+          description: 'Deu tudo certo'
+          schema:
+            type: 'object'
+            $ref: '#/definitions/ProdutoResponse'
+        '400':
+          description: 'Erros variados, mas com o padrão: <br/>{ erro: "ID inválido" }'
         '404':
-          description: 'Inscrição não encontrada'
+          description: '{ erro: "Objeto não encontrado" }'
         '500':
-          description: 'Internal server error'
-      security:
-        - petstore_auth:
-            - 'write:palestrantes'
-
-securityDefinitions:
-  petstore_auth:
-    type: 'oauth2'
-    authorizationUrl: 'http://petstore.swagger.io/oauth/dialog'
-    flow: 'implicit'
-    scopes:
-      write:palestrantes: 'modify pets in your account'
-  api_key:
-    type: 'apiKey'
-    name: 'api_key'
-    in: 'header'
+          description: '{ erro: "Erro interno do servidor" }'
 definitions:
-  User:
+  Produto:
     type: 'object'
     properties:
-      id:
+      nome:
         type: 'string'
-      name:
+        example: 'Produto 1'
+      descricao:
         type: 'string'
-      email:
+        example: 'Descrição do produto 1'
+      estoque:
+        type: 'number'
+        example: 100
+      imagem:
         type: 'string'
-      cpf:
-        type: 'string'
-      studentCode:
-        type: 'string'
-      course:
-        type: 'string'
-      password:
-        type: 'string'
-  Palestrante:
+        example: 'http://localhost:3333/uploads/images/{nome-da-imagem.extensao}'
+  ProdutoResponse:
     type: 'object'
     properties:
-      id:
+      _id:
         type: 'string'
-      name:
+      nome:
         type: 'string'
-      institution:
+        example: 'Produto 1'
+      descricao:
         type: 'string'
-      photo:
+        example: 'Descrição do produto 1'
+      estoque:
+        type: 'number'
+        example: 100
+      imagem:
         type: 'string'
+        example: 'http://localhost:3333/uploads/images/{nome-da-imagem.extensao}'
+
 externalDocs:
   description: 'Find out more about Swagger'
   url: 'http://swagger.io'
