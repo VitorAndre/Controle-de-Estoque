@@ -19,13 +19,16 @@ function checkData({ nome, descricao, estoque }) {
 ProdutoRouter.post('/', [Multer.single('image'), resizeImage], (req, res) => {
   const { nome, descricao, estoque } = req.body;
   let error = checkData({ nome, descricao, estoque });
-
   if (error) {
     if (req.file) DeletePhoto(req.file.path);
     return res.status(400).send({ erro: error });
   } else {
     if (!req.file)
-      return res.status(400).send({ mensagem: 'Nenhuma imagem foi enviada' });
+      return res.status(400).send({ erro: 'Nenhuma imagem foi enviada' });
+  }
+  if (estoque < 0) {
+    if (req.file) DeletePhoto(req.file.path);
+    return res.status(400).send({ erro: 'Valor de estoque incorreto' });
   }
   const imagem = req.file.path;
 
@@ -57,6 +60,20 @@ ProdutoRouter.get('/', (req, res) => {
     });
 });
 
+ProdutoRouter.get('/:id', (req, res) => {
+  const id = req.params.id;
+
+  ProdutoSchema.findById(id)
+    .then((resultado) => {
+      resultado.imagem = formatUrls(resultado.imagem);
+      return res.send(resultado);
+    })
+    .catch((err) => {
+      console.error(err, 'Erro ao listar objetos');
+      return res.status(500).send({ erro: 'Erro interno do servidor' });
+    });
+});
+
 ProdutoRouter.put('/:id', [Multer.single('image'), resizeImage], (req, res) => {
   const id = req.params.id;
   const { nome, descricao, estoque } = req.body;
@@ -65,17 +82,23 @@ ProdutoRouter.put('/:id', [Multer.single('image'), resizeImage], (req, res) => {
   if (error) {
     if (req.file) DeletePhoto(req.file.path);
     return res.status(400).send({ erro: error });
-  } else {
-    if (!req.file)
-      return res.status(400).send({ mensagem: 'Nenhuma imagem foi enviada' });
   }
-  const imagem = req.file.path;
+  if (estoque < 0) {
+    if (req.file) DeletePhoto(req.file.path);
+    return res.status(400).send({ erro: 'Valor de estoque incorreto' });
+  }
+  const imagem = req.file ? req.file.path : null;
 
   if (!id) return res.status(400).send({ erro: 'ID é obrigatório' });
   if (!isValidObjectId(id))
     return res.status(400).send({ erro: 'ID inválido' });
 
-  ProdutoSchema.findByIdAndUpdate(id, { nome, descricao, estoque, imagem })
+  ProdutoSchema.findByIdAndUpdate(
+    id,
+    !imagem
+      ? { nome, descricao, estoque }
+      : { nome, descricao, estoque, imagem },
+  )
     .then((resultado) => {
       if (resultado) return res.send(resultado);
       else return res.status(404).send({ erro: 'Objeto não encontrado' });
@@ -95,6 +118,10 @@ ProdutoRouter.put('/estoque/:id', (req, res) => {
   if (!isValidObjectId(id))
     return res.status(400).send({ erro: 'ID inválido' });
 
+  if (estoque < 0) {
+    if (req.file) DeletePhoto(req.file.path);
+    return res.status(400).send({ erro: 'Valor de estoque incorreto' });
+  }
   ProdutoSchema.findByIdAndUpdate(id, { estoque }, { new: true })
     .then((resultado) => {
       if (resultado) return res.send(resultado);
