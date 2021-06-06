@@ -1,6 +1,6 @@
-# Back-end Portfólio
+# Back-end
 
-Base de back-end com Node, Express e MongoDB.
+Back-end com Node, Express e MongoDB.
 
 ## Configuração do projeto
 
