@@ -18,15 +18,25 @@
     // border-radius: 5px;
   }
   .nome {
-    width: 50%;
+    width: 73%;
   }
   .estoque {
     //float: right;
-    margin-left: 1.5rem;
+    margin-left: 2%;
     width: 25%;
   }
+  @media (max-width: 720px) {
+    .nome {
+      width: 49%;
+    }
+    .estoque {
+      //float: right;
+      margin-left: 2%;
+      width: 49%;
+    }
+  }
   .descricao {
-    width: calc(75% + 1.5rem);
+    width: 100%;
   }
   .file {
     display: none;
@@ -40,6 +50,12 @@
     &:hover {
       background-color: #fff;
       color: #000 !important;
+    }
+  }
+  @media (max-width: 320px) {
+    .fileLabel {
+      padding: 0.2rem;
+      font-size: 12px;
     }
   }
   .submit {
