@@ -5,7 +5,7 @@
 ## Pré-requisitos
 
  `npm --version`<br>
-  Para a execução do projeto é necessário ter instalado o gerenciador de pacotes yarn ou equivalente.
+  Para a execução do projeto é necessário ter instalado o gerenciador de pacotes npm ou equivalente.
   
 ## Iniciando...
 
